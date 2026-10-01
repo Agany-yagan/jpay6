@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPay Admin Panel</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#111;color:white;padding:15px}
+.card{background:#222;border-radius:12px;padding:15px;margin-bottom:15px}
+h1{color:#00ff88}
+.stat{font-size:28px;font-weight:bold;color:#00ff88}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px;text-align:left;border-bottom:1px solid #333}
+th{color:#888}
+.badge{background:#00ff88;color:black;padding:2px 6px;border-radius:10px;font-size:11px}
+a{color:#00ff88}
+</style>
+</head>
+<body>
+<h1>JPay Admin 👑</h1>
+<p><a href="/">← Back to App</a></p>
+
+<div class="card">
+<h3>Total System</h3>
+<div class="stat" id="total_money">KES -</div>
+<div>Total users: <span id="total_users">-</span> | Total TX: <span id="total_tx">-</span></div>
+</div>
+
+<div class="card" style="border:1px solid #00ff88">
+<h3>YOUR PROFIT</h3>
+<div class="stat" id="profit">KES -</div>
+<div>Wallet: 0711000000</div>
+</div>
+
+<div class="card">
+<h3>All Registered Users</h3>
+<table id="users_table">
+<tr><th>ID</th><th>Name</th><th>Phone</th><th>Balance</th><th>TX</th></tr>
+</table>
+</div>
+
+<script>
+async function load(){
+  const r = await fetch('/admin/users').then(r=>r.json());
+  document.getElementById('total_money').innerText = 'KES ' + (r.total_money/100).toFixed? r.total_money : r.total_money;
+  document.getElementById('total_money').innerText = 'KES ' + r.total_money;
+  document.getElementById('total_users').innerText = r.users.length;
+  document.getElementById('total_tx').innerText = r.stats.total_tx;
+  document.getElementById('profit').innerText = 'KES ' + r.total_profit;
+
+  const table = document.getElementById('users_table');
+  r.users.forEach(u=>{
+    const row = `<tr><td>${u.id}</td><td>${u.name} ${u.phone=='0711000000'?'<span class=badge>YOU</span>':''}</td><td>${u.phone}</td><td>KES ${u.balance}</td><td>${u.tx_count}</td></tr>`;
+    table.innerHTML += row;
+  });
+}
+load();
+setInterval(load, 3000);
+</script>
+</body>
+</html>

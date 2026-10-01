@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"><style>body{font-family:sans-serif;padding:15px;background:#f5f5f5}.card{background:white;padding:15px;margin:10px 0;border-radius:10px} input,button{padding:10px;margin:5px;width:90%} button{background:black;color:white;border:0;border-radius:5px}</style></head><body>
+<h2>JPay V5 Wallet Dashboard</h2>
+<div class="card"><h3>Register</h3><input id="rphone" placeholder="Phone 071..."><input id="rname" placeholder="Name"><button onclick="reg()">Register</button></div>
+<div class="card"><h3>Deposit</h3><input id="dphone" placeholder="Phone"><input id="damt" type="number" placeholder="Amount"><button onclick="dep()">Deposit</button></div>
+<div class="card"><h3>Send Between Numbers</h3><input id="sfrom" placeholder="From"><input id="sto" placeholder="To"><input id="samt" type="number" placeholder="Amount"><button onclick="send()">Send</button></div>
+<div class="card"><h3>Withdraw</h3><input id="wphone" placeholder="Phone"><input id="wamt" type="number" placeholder="Amount"><button onclick="wd()">Withdraw</button></div>
+<div class="card"><h3>Check Balance</h3><input id="bphone" placeholder="Phone"><button onclick="bal()">Check</button><div id="bout"></div><div id="hout"></div></div>
+<pre id="log"></pre>
+<script>
+const log=(m)=>document.getElementById('log').innerText=JSON.stringify(m,null,2)
+async function reg(){ let r=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:rphone.value,name:rname.value})}); log(await r.json())}
+async function dep(){ let r=await fetch('/api/deposit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:dphone.value,amount:damt.value})}); log(await r.json())}
+async function send(){ let r=await fetch('/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({from:sfrom.value,to:sto.value,amount:samt.value})}); log(await r.json())}
+async function wd(){ let r=await fetch('/api/withdraw',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:wphone.value,amount:wamt.value})}); log(await r.json())}
+async function bal(){ let r=await fetch('/api/balance/'+bphone.value); let j=await r.json(); document.getElementById('bout').innerText='Balance: '+(j.balance??j.error); let h=await fetch('/api/history/'+bphone.value); document.getElementById('hout').innerText=JSON.stringify(await h.json(),null,2); log(j)}
+</script></body></html>
